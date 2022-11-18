@@ -7,6 +7,7 @@ const ajv = new Ajv();
 
 const validationMiddleware = (schema:any) => {
   const validate = ajv.compile(schema);
+  // eslint-disable-next-line consistent-return
   return (req:Request,res:Response,next:NextFunction) => {
     if(validate(req.body)){
       next();

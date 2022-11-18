@@ -7,11 +7,11 @@ const controllerWrapper = (func: (req: Request, res: Response, next:NextFunction
         try{
             await func(req,res,next);
         } catch(err:any) {
-            if(typeof err === typeof AppError){
-                if(err.isOperational){
-                    logger.log('error',err);
-                    res.status(500).send(errorResponse(err.message));
-                }
+            if(err.isOperational){
+                logger.log('error',err.stack);
+                res.status(500).send(errorResponse(err.message));
+            } else {
+                process.exit(1);
             }
         }
     };
