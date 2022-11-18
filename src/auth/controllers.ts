@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import AppError from '../utils/AppError';
 import prisma from '../utils/prisma-client';
 import { successResponse } from '../utils/response';
+import { encodeToken } from '../utils/jsonwebtoken';
 
 /**
  * @route /api/auth/register [post]
@@ -15,12 +16,12 @@ export const register = async (req: Request, res: Response) => {
 
     // check if user exists
     const existingUser = await prisma.users.findFirst({
-        where: { 
-            AND: { 
-                username: { equals: username } , 
-                type: { equals: type } 
-            } 
-        } 
+        where: {
+            AND: {
+                username: { equals: username },
+                type: { equals: type },
+            },
+        },
     });
 
     if (existingUser) {
@@ -28,7 +29,7 @@ export const register = async (req: Request, res: Response) => {
     }
 
     // hash password
-    const hash = await bcrypt.hashSync(password,8);
+    const hash = await bcrypt.hashSync(password, 8);
 
     // create new user
     await prisma.users.create({
@@ -36,14 +37,30 @@ export const register = async (req: Request, res: Response) => {
             username,
             password: hash,
             type,
-            status: 'active'
-        }
+            status: 'active',
+        },
     });
 
-
-    return res.status(201).json(successResponse('User created successfully')).end();
+    return res
+        .status(201)
+        .json(successResponse('User created successfully'))
+        .end();
 };
 
-export const login = (req: Request, res: Response) => {
-    res.send('Login working!');
+export const login = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    const user = await prisma.users.findFirstOrThrow({
+        where: {
+            username,
+        },
+    });
+
+    if (!bcrypt.compareSync(password, user.password)) {
+        throw new AppError('Password mismatch');
+    }
+
+    const token = await encodeToken({ id: user.user_id });
+
+    res.status(200).send(successResponse('User logged in', token));
 };
