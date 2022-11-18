@@ -19,13 +19,13 @@ const prisma = new PrismaClient({
             emit: 'stdout',
             level: 'warn',
         },
-    ]
+    ],
 });
 
 prisma.$on('query', (e: any) => {
-    logger.log('debug',`Query: ${  e.query}`);
-    logger.log('debug',`Params: ${  e.params}`);
-    logger.log('debug',`Duration: ${  e.duration  }ms`);
+    logger.log('debug', `Query: ${e.query}`);
+    logger.log('debug', `Params: ${e.params}`);
+    logger.log('debug', `Duration: ${e.duration}ms`);
 });
 
 export default prisma;

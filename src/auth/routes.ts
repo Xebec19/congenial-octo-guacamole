@@ -11,12 +11,16 @@ const childRouter = (mainRouter: Router) => {
     mainRouter.use('/auth', router);
 };
 
-router.post('/register',
+router.post(
+    '/register',
     validationMiddleware(registerSchema),
-    controllerWrapper(register));
+    controllerWrapper(register),
+);
 
-router.post('/login',
+router.post(
+    '/login',
     validationMiddleware(loginSchema),
-    controllerWrapper(login));
+    controllerWrapper(login),
+);
 
 export default childRouter;
