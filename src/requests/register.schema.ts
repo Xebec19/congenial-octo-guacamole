@@ -1,11 +1,20 @@
-import Joi from 'joi';
+import { JSONSchemaType } from 'ajv';
 
-const schema = {
-    registerPost: Joi.object().keys({
-        username: Joi.string().regex(/^[a-z\d\-_.\s%(\\)&]+$/i),
-        password: Joi.string().min(8).regex(/^[a-z\d\-_.\s%(\\)&]+$/i),
-        type: Joi.string().regex(/^[a-z\d\-_.\s%(\\)&]+$/i)
-    })
+interface IRegisterBody {
+    username: string,
+    password: string,
+    type: 'buyer'|'seller'
+}
+
+const schema: JSONSchemaType<IRegisterBody> = {
+    type: 'object',
+    properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+        type: { type: 'string' }
+    },
+    required: ['username','password','type'],
+    additionalProperties: false
 };
 
 export default schema;

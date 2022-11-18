@@ -1,12 +1,20 @@
+import Ajv, { JSONSchemaType } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
-import Joi from 'joi';
+import logger from '../utils/logger';
+import { errorResponse } from '../utils/response';
 
-const validationMiddleware = (schema, property) => (req:Request,res:Response,next:NextFunction) => {
-                const { error } = schema.validate(req.body);
-                const valid = error == null;
-                if(valid){
-                next();
-                }
-        };
+const ajv = new Ajv();
+
+const validationMiddleware = (schema:any) => {
+  const validate = ajv.compile(schema);
+  return (req:Request,res:Response,next:NextFunction) => {
+    if(validate(req.body)){
+      next();
+    } else {
+      logger.log('warn',validate.errors);
+      return res.status(400).send(errorResponse('Invalid parameters')).end();
+    }
+  };
+};
 
 export default validationMiddleware;
