@@ -1,4 +1,5 @@
 import app from './index';
-import { PORT } from './utils/environment'
+import { serverPort } from './utils/environment';
+import logger from './utils/logger';
 
-app.listen(PORT,() => console.log(`Server running at ${PORT}`));
+app.listen(serverPort,() => logger.log('info',`Server running at ${serverPort}`));
