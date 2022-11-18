@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "hybr1d",
+            "database": "hybr1d",
+            "username": "postgres",
+            "password": "root"
+        }
+    ]
+}

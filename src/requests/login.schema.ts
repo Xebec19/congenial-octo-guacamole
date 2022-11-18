@@ -1,19 +1,17 @@
 import { JSONSchemaType } from 'ajv';
 
-interface IRegisterBody {
+interface ILoginBody {
     username: string;
     password: string;
-    type: 'buyer' | 'seller';
 }
 
-const schema: JSONSchemaType<IRegisterBody> = {
+const schema: JSONSchemaType<ILoginBody> = {
     type: 'object',
     properties: {
         username: { type: 'string' },
         password: { type: 'string' },
-        type: { type: 'string' },
     },
-    required: ['username', 'password', 'type'],
+    required: ['username', 'password'],
     additionalProperties: false,
 };
 
