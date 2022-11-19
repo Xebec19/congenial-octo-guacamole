@@ -1,13 +1,15 @@
 import express from 'express';
 
 import authRouter from './auth/routes';
-import { decodeToken } from './utils/jsonwebtoken';
+import sellerRoutes from './seller/routes';
+import decodeToken from './middleware/decode-token';
 
 const router = express.Router();
 
 authRouter(router);
 
-// Protected Routes
 router.use(decodeToken);
+
+sellerRoutes(router);
 
 export default router;

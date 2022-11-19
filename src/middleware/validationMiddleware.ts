@@ -15,7 +15,7 @@ const validationMiddleware = (schema: any) => {
             logger.log('warn', validate.errors);
             return res
                 .status(400)
-                .send(errorResponse('Invalid parameters'))
+                .send(errorResponse('Invalid parameters', validate.errors))
                 .end();
         }
     };

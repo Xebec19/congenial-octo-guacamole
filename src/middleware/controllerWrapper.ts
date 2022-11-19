@@ -11,7 +11,7 @@ const controllerWrapper =
         } catch (err: any) {
             if (err.isOperational) {
                 logger.log('error', err.stack);
-                res.status(500).send(errorResponse(err.message));
+                res.status(500).send(errorResponse(err.message, err.stack));
             } else if (env === 'production') {
                 process.exit(1);
             }

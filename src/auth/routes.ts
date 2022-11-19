@@ -12,13 +12,13 @@ const childRouter = (mainRouter: Router) => {
 };
 
 router.post(
-    '/register',
+    '/v1/register',
     validationMiddleware(registerSchema),
     controllerWrapper(register),
 );
 
 router.post(
-    '/login',
+    '/v1/login',
     validationMiddleware(loginSchema),
     controllerWrapper(login),
 );
