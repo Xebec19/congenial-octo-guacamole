@@ -14,7 +14,7 @@ export const viewProduct = async (req: Request, res: Response) => {
     const { offset, limit, sellerId } = req.body;
 
     const list = await prisma.products.findMany({
-        where: { created_by: sellerId },
+        where: { created_by: sellerId, status: 'active' },
         skip: offset,
         take: limit,
         select: {
@@ -47,8 +47,8 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const order = await prisma.orders.create({
         data: {
-            order_by: sellerId,
-            order_for: res.locals.user.id,
+            order_for: sellerId,
+            order_by: res.locals.user.id,
             status: 'pending',
         },
         select: {

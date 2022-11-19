@@ -14,12 +14,15 @@ import listOrderSchema from './schemas/listOrder.schema';
 import updateOrderSchema from './schemas/update-order.schema';
 import validationMiddleware from '../middleware/validationMiddleware';
 import controllerWrapper from '../middleware/controllerWrapper';
+import userCheckMiddleware from '../middleware/user-check';
 
 const router = express.Router();
 
 const childRouter = (mainRouter: Router) => {
     mainRouter.use('/seller', router);
 };
+
+router.use(userCheckMiddleware('seller'));
 
 router.post(
     '/v1/create-product',

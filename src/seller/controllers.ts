@@ -19,6 +19,7 @@ export const createProduct = async (req: Request, res: Response) => {
             product_name: productName,
             product_price: productPrice,
             created_by: res.locals.user.id ?? '',
+            status: 'active',
         },
         select: {
             product_id: true,
@@ -124,15 +125,18 @@ export const deleteProduct = async (req: Request, res: Response) => {
         );
 };
 
+/**
+ * @route /api/seller/v1/list-orders
+ * @desc list orders in paginated way
+ * @param { number } offset
+ * @param { number } limit
+ */
 export const listOrders = async (req: Request, res: Response) => {
     const { offset, limit } = req.body;
 
     const orders =
-        await prisma.$queryRaw`select order_id as id, u1.username as buyer, u2.username as supplier 
-        from orders o 
-        inner join users u1 on u1.user_id = o.order_by 
-        inner join users u2 on u2.user_id = o.order_for
-        where o.order_for::text = ${res.locals.user.id} offset ${offset} limit ${limit};`;
+        await prisma.$queryRaw`select order_id, buyer_id, buyer_name, seller_id, seller_name, status, price from v_orders
+        where seller_id::text = ${res.locals.user.id} offset ${offset} limit ${limit};`;
 
     return res.status(200).send(successResponse('Orders fetched', orders));
 };

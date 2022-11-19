@@ -62,13 +62,18 @@ export const login = async (req: Request, res: Response) => {
         where: {
             username,
         },
+        select: {
+            password: true,
+            user_id: true,
+            type: true,
+        },
     });
 
     if (!bcrypt.compareSync(password, user.password)) {
         throw new AppError('Password mismatch');
     }
 
-    const token = await encryptToken({ id: user.user_id });
+    const token = await encryptToken({ id: user.user_id, type: user.type });
 
     res.status(200).send(successResponse('User logged in', token));
 };
