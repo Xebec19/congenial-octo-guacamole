@@ -1,29 +1,29 @@
-import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import logger from './logger';
 import { jwtSecret } from './environment';
 
-export const decodeToken = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
+/**
+ * @desc verifies a jwt token
+ * @param token jwt token
+ * @returns payload saved in token
+ */
+export const decryptToken = (token: string) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        jwt.verify(`${token}`, `${jwtSecret}`, (err, decoded) => {
-            if (err) {
-                throw new Error(err.message);
-            }
-            res.locals.user = decoded;
-            next();
-        });
+        const { payload } = <JwtPayload>jwt.verify(token, `${jwtSecret}`);
+        logger.log('info', payload);
+        return payload;
     } catch (error: any) {
         logger.log('error', error.stack);
-        res.status(401).json({ message: error.message }).end();
+        return false;
     }
 };
 
-export const encodeToken = (payload: object): string => {
+/**
+ * @desc encrypts a payload into jwt token
+ * @param payload
+ * @returns jwt token
+ */
+export const encryptToken = (payload: object): string => {
     const token = jwt.sign({ payload }, `${jwtSecret}`);
     return token;
 };

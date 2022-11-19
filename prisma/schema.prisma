@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model catalogs {
-  catalog_id   String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  catalog_name String      @unique @db.VarChar(100)
-  created_by   String?     @unique @db.Uuid
-  created_at   DateTime?   @default(now()) @db.Timestamp(6)
-  updated_at   DateTime?   @default(now()) @db.Timestamp(6)
-  status       row_status?
-  users        users?      @relation(fields: [created_by], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  products     products[]
-}
-
 model order_items {
   order_id   String      @db.Uuid
   product_id String      @db.Uuid
@@ -44,8 +33,9 @@ model products {
   product_id    String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   product_name  String        @db.VarChar(200)
   product_price Decimal?      @default(0) @db.Decimal
-  catalog_id    String?       @db.Uuid
-  catalogs      catalogs?     @relation(fields: [catalog_id], references: [catalog_id], onDelete: Cascade, onUpdate: NoAction)
+  created_by    String?       @db.Uuid
+  status        row_status?
+  users         users?        @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by")
   order_items   order_items[]
 }
 
@@ -62,9 +52,9 @@ model users {
   created_at                     DateTime?   @default(now()) @db.Timestamp(6)
   updated_at                     DateTime?   @default(now()) @db.Timestamp(6)
   status                         row_status?
-  catalogs                       catalogs?
   orders_orders_order_byTousers  orders[]    @relation("orders_order_byTousers")
   orders_orders_order_forTousers orders[]    @relation("orders_order_forTousers")
+  products                       products[]
 }
 
 enum order_status {

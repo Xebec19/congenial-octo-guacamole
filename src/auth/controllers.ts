@@ -3,10 +3,10 @@ import bcrypt from 'bcryptjs';
 import AppError from '../utils/AppError';
 import prisma from '../utils/prisma-client';
 import { successResponse } from '../utils/response';
-import { encodeToken } from '../utils/jsonwebtoken';
+import { encryptToken } from '../utils/jsonwebtoken';
 
 /**
- * @route /api/auth/register [post]
+ * @route /api/auth/v1/register [post]
  * @param {string} username
  * @param {password} password
  * @param {'buyer'|'seller'} type type of user
@@ -32,21 +32,29 @@ export const register = async (req: Request, res: Response) => {
     const hash = await bcrypt.hashSync(password, 8);
 
     // create new user
-    await prisma.users.create({
+    const user = await prisma.users.create({
         data: {
             username,
             password: hash,
             type,
             status: 'active',
         },
+        select: {
+            user_id: true,
+        },
     });
 
     return res
         .status(201)
-        .json(successResponse('User created successfully'))
+        .json(successResponse('User created successfully', user.user_id))
         .end();
 };
 
+/**
+ * @route /api/auth/v1/login [post]
+ * @param {string} username
+ * @param {string} password
+ */
 export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
@@ -60,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
         throw new AppError('Password mismatch');
     }
 
-    const token = await encodeToken({ id: user.user_id });
+    const token = await encryptToken({ id: user.user_id });
 
     res.status(200).send(successResponse('User logged in', token));
 };
