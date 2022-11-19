@@ -9,12 +9,8 @@ const controllerWrapper =
         try {
             await func(req, res, next);
         } catch (err: any) {
-            if (err.isOperational) {
-                logger.log('error', err.stack);
-                res.status(500).send(errorResponse(err.message, err.stack));
-            } else if (env === 'production') {
-                process.exit(1);
-            }
+            logger.log('error', err.stack);
+            res.status(500).send(errorResponse(err.message, err.stack));
         }
     };
 
