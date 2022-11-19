@@ -7,12 +7,13 @@ import {
     listProduct,
     updateOrder,
 } from './controllers';
-import createProductSchema from '../requests/create-product.schema';
-import listProductsSchema from '../requests/list-product.schema';
-import editProductSchema from '../requests/update-product.schema';
-import listOrderSchema from '../requests/listOrder.schema';
-import updateOrderSchema from '../requests/update-order.schema';
+import createProductSchema from './schemas/create-product.schema';
+import listProductsSchema from './schemas/list-product.schema';
+import editProductSchema from './schemas/update-product.schema';
+import listOrderSchema from './schemas/listOrder.schema';
+import updateOrderSchema from './schemas/update-order.schema';
 import validationMiddleware from '../middleware/validationMiddleware';
+import controllerWrapper from '../middleware/controllerWrapper';
 
 const router = express.Router();
 
@@ -29,27 +30,27 @@ router.post(
 router.post(
     '/v1/list-products',
     validationMiddleware(listProductsSchema),
-    listProduct,
+    controllerWrapper(listProduct),
 );
 
 router.post(
     '/v1/edit-product',
     validationMiddleware(editProductSchema),
-    editProduct,
+    controllerWrapper(editProduct),
 );
 
-router.get('/v1/delete-product', deleteProduct);
+router.get('/v1/delete-product', controllerWrapper(deleteProduct));
 
 router.post(
     '/v1/list-orders',
     validationMiddleware(listOrderSchema),
-    listOrders,
+    controllerWrapper(listOrders),
 );
 
 router.post(
     '/v1/update-order',
     validationMiddleware(updateOrderSchema),
-    updateOrder,
+    controllerWrapper(updateOrder),
 );
 
 export default childRouter;

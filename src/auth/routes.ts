@@ -2,8 +2,8 @@ import express, { Router } from 'express';
 import controllerWrapper from '../middleware/controllerWrapper';
 import validationMiddleware from '../middleware/validationMiddleware';
 import { login, register } from './controllers';
-import registerSchema from '../requests/register.schema';
-import loginSchema from '../requests/login.schema';
+import registerSchema from './schemas/register.schema';
+import loginSchema from './schemas/login.schema';
 
 const router = express.Router();
 

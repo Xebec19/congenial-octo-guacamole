@@ -4,6 +4,7 @@ import { errorResponse } from '../utils/response';
 import { decryptToken } from '../utils/jsonwebtoken';
 import AppError from '../utils/AppError';
 
+// eslint-disable-next-line consistent-return
 const decodeToken = (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(' ')[1] ?? '';
